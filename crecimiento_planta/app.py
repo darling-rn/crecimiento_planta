@@ -90,7 +90,6 @@ with col2:
     spline_val = spline_cubico(x_interp)
     st.metric("Spline cúbico", f"{spline_val:.3f} cm")
 
-st.metric("Regresión exponencial", f"{exp_val:.3f} cm")
 st.metric("Regresión lineal", f"{linear_val:.3f} cm\nR² = {r2_linear:.3f}")
 
 # Gráfica
