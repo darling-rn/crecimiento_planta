@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.interpolate import CubicSpline
 
 st.set_page_config(page_title="Crecimiento de una Planta", layout="centered")
 st.title("🌱 Crecimiento de una Planta - Métodos Numéricos")
@@ -28,13 +29,8 @@ def lagrange_interp(xi, x, y):
         result += term
     return result
 
-# Spline lineal aproximado
-def spline_linear(xi, x, y):
-    for i in range(len(x) - 1):
-        if x[i] <= xi <= x[i+1]:
-            t = (xi - x[i]) / (x[i+1] - x[i])
-            return y[i] + t * (y[i+1] - y[i])
-    return None
+# Spline cúbico con scipy
+spline_cubico = CubicSpline(x, y)
 
 # Regresión exponencial
 def exp_reg(x, y):
@@ -62,7 +58,9 @@ def newton_non_linear():
 
 # Resultados
 st.subheader("📈 Resultados de estimación")
-
+u, v = newton_non_linear()
+st.metric("Newton no lineal - u", f"{u:.5f}")
+st.metric("Newton no lineal - v", f"{v:.5f}")
 col1, col2 = st.columns(2)
 
 with col1:
@@ -70,26 +68,24 @@ with col1:
     st.metric("Lagrange", f"{lag_val:.3f} cm")
 
 with col2:
-    spline_val = spline_linear(x_interp, x, y)
-    st.metric("Spline lineal", f"{spline_val:.3f} cm")
+    spline_val = spline_cubico(x_interp)
+    st.metric("Spline cúbico", f"{spline_val:.3f} cm")
 
 st.metric("Regresión exponencial", f"{a * np.exp(b * x_interp):.3f} cm")
 
-u, v = newton_non_linear()
-st.metric("Newton no lineal - u", f"{u:.5f}")
-st.metric("Newton no lineal - v", f"{v:.5f}")
+
 
 # Gráfica
 st.subheader("📉 Gráfica comparativa")
 x_dense = np.linspace(0, 90, 300)
 lagrange_y = [lagrange_interp(xi, x, y) for xi in x_dense]
-spline_y = [spline_linear(xi, x, y) for xi in x_dense]
+spline_y = spline_cubico(x_dense)
 exp_y = a * np.exp(b * x_dense)
 
 fig, ax = plt.subplots(figsize=(10, 4))
 ax.plot(x, y, 'o', label="Datos reales")
 ax.plot(x_dense, lagrange_y, '--', label="Lagrange")
-ax.plot(x_dense, spline_y, ':', label="Spline lineal")
+ax.plot(x_dense, spline_y, ':', label="Spline cúbico")
 ax.plot(x_dense, exp_y, '-.', label="Regresión exp")
 ax.set_xlabel("Día")
 ax.set_ylabel("Altura (cm)")
@@ -99,4 +95,4 @@ ax.grid(True)
 
 st.pyplot(fig)
 
-st.caption("Desarrollado por Carlos. Métodos implementados: Lagrange, Spline, Regresión Exponencial, Newton no lineal.")
+st.caption("Desarrollado por Carlos. Métodos implementados: Lagrange, Spline cúbico, Regresión Exponencial, Newton no lineal.")
