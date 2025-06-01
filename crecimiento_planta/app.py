@@ -116,4 +116,3 @@ ax.grid(True)
 
 st.pyplot(fig)
 
-st.caption("Desarrollado por Carlos. Métodos: Newton, Lagrange, Spline cúbico, Regresión exponencial, Regresión lineal.")
