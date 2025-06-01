@@ -17,7 +17,7 @@ df = pd.DataFrame({"Día": x, "Altura (cm)": y})
 st.subheader("📊 Datos de crecimiento")
 st.dataframe(df, use_container_width=True)
 
-x_interp = st.slider("Elegí un día para estimar la altura:", min_value=0, max_value=90, step=1, value=38)
+x_interp = st.slider("Elegí un día para estimar la altura:", min_value=0, max_value=90, step=1, value=40)
 
 # Newton (diferencias divididas)
 def newton_divided_differences(x_points, y_points):
